@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voronoi Diagram Interactive</title>
+    <style>
+        canvas {
+            width: 100%;
+            height: 80vh;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="voronoiCanvas"></canvas>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/d3-delaunay.v6.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const canvas = document.getElementById('voronoiCanvas');
+            const context = canvas.getContext('2d');
+            const points = [];
+
+            // Set the actual size of the canvas for drawing.
+            canvas.width = canvas.offsetWidth;
+            canvas.height = window.innerHeight * 0.8;
+
+            canvas.addEventListener('click', function(event) {
+                const rect = canvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                points.push([x, y]);
+                updateVoronoiDiagram();
+            });
+
+            function updateVoronoiDiagram() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                if (points.length > 1) {
+                    const delaunay = d3.Delaunay.from(points);
+                    const voronoi = delaunay.voronoi([0, 0, canvas.width, canvas.height]);
+
+                    context.beginPath();
+                    voronoi.render(context);
+                    context.strokeStyle = "#000";
+                    context.stroke();
+                }
+
+                points.forEach(point => {
+                    context.beginPath();
+                    context.arc(point[0], point[1], 3, 0, 2 * Math.PI, false);
+                    context.fillStyle = "red";
+                    context.fill();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
