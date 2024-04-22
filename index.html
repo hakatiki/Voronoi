@@ -5,15 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voronoi Diagram Interactive</title>
     <style>
+        body {
+            margin: 0;
+            background-color: #333;
+            color: #ccc;
+        }
         canvas {
-            width: 100%;
-            height: 80vh;
-            border: 1px solid black;
+            display: block; /* Removes bottom margin/gap */
+            width: 100vw;
+            height: 100vh;
+            background-color: #222;
+        }
+        button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ccc;
+            background-color: #444;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
     <canvas id="voronoiCanvas"></canvas>
+    <button id="resetButton">Reset</button>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/d3-delaunay.v6.min.js"></script>
     <script>
@@ -21,10 +43,8 @@
             const canvas = document.getElementById('voronoiCanvas');
             const context = canvas.getContext('2d');
             const points = [];
-
-            // Set the actual size of the canvas for drawing.
-            canvas.width = canvas.offsetWidth;
-            canvas.height = window.innerHeight * 0.8;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
 
             canvas.addEventListener('click', function(event) {
                 const rect = canvas.getBoundingClientRect();
@@ -32,6 +52,11 @@
                 const y = event.clientY - rect.top;
                 points.push([x, y]);
                 updateVoronoiDiagram();
+            });
+
+            document.getElementById('resetButton').addEventListener('click', function() {
+                points.length = 0; // Clear the points array
+                context.clearRect(0, 0, canvas.width, canvas.height);
             });
 
             function updateVoronoiDiagram() {
@@ -42,13 +67,14 @@
 
                     context.beginPath();
                     voronoi.render(context);
-                    context.strokeStyle = "#000";
+                    context.strokeStyle = "#fff";
+                    context.lineWidth = 2; // Thicker line for visibility
                     context.stroke();
                 }
 
                 points.forEach(point => {
                     context.beginPath();
-                    context.arc(point[0], point[1], 3, 0, 2 * Math.PI, false);
+                    context.arc(point[0], point[1], 5, 0, 2 * Math.PI, false); // Larger point size
                     context.fillStyle = "red";
                     context.fill();
                 });
