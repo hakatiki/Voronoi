@@ -27,15 +27,20 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            z-index: 10;
         }
         button:hover {
             background-color: #555;
+        }
+        #toggleButton {
+            right: 140px; /* Slightly to the left of the reset button */
         }
     </style>
 </head>
 <body>
     <canvas id="voronoiCanvas"></canvas>
     <button id="resetButton">Reset</button>
+    <button id="toggleButton">Toggle Points</button>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/d3-delaunay.v6.min.js"></script>
     <script>
@@ -43,6 +48,7 @@
             const canvas = document.getElementById('voronoiCanvas');
             const context = canvas.getContext('2d');
             const points = [];
+            let showPoints = true;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
@@ -59,6 +65,11 @@
                 context.clearRect(0, 0, canvas.width, canvas.height);
             });
 
+            document.getElementById('toggleButton').addEventListener('click', function() {
+                showPoints = !showPoints;
+                updateVoronoiDiagram();
+            });
+
             function updateVoronoiDiagram() {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 if (points.length > 1) {
@@ -72,12 +83,14 @@
                     context.stroke();
                 }
 
-                points.forEach(point => {
-                    context.beginPath();
-                    context.arc(point[0], point[1], 5, 0, 2 * Math.PI, false); // Larger point size
-                    context.fillStyle = "red";
-                    context.fill();
-                });
+                if (showPoints) {
+                    points.forEach(point => {
+                        context.beginPath();
+                        context.arc(point[0], point[1], 5, 0, 2 * Math.PI, false); // Larger point size
+                        context.fillStyle = "red";
+                        context.fill();
+                    });
+                }
             }
         });
     </script>
