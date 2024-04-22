@@ -9,6 +9,7 @@
             margin: 0;
             background-color: #333;
             color: #ccc;
+            font-family: 'Arial', sans-serif;
         }
         canvas {
             display: block; /* Removes bottom margin/gap */
@@ -16,31 +17,41 @@
             height: 100vh;
             background-color: #222;
         }
-        button {
+        .button {
             position: fixed;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            margin-left: 20px;
             padding: 10px 20px;
             font-size: 16px;
-            color: #ccc;
-            background-color: #444;
+            color: #eee;
+            background-color: #666;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            z-index: 10;
+            transition: background-color 0.3s;
         }
-        button:hover {
-            background-color: #555;
+        .button:hover {
+            background-color: #777;
+        }
+        .button:active {
+            transform: translateY(2px);
+        }
+        #resetButton {
+            right: 20px; /* Positioned on the right */
         }
         #toggleButton {
-            right: 140px; /* Slightly to the left of the reset button */
+            right: 160px; /* Positioned to the left of the reset button */
+        }
+        #randomButton {
+            left: 20px; /* Positioned on the left */
         }
     </style>
 </head>
 <body>
     <canvas id="voronoiCanvas"></canvas>
-    <button id="resetButton">Reset</button>
-    <button id="toggleButton">Toggle Points</button>
+    <button id="resetButton" class="button">Reset</button>
+    <button id="toggleButton" class="button">Toggle Points</button>
+    <button id="randomButton" class="button">Randomize</button>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/d3-delaunay.v6.min.js"></script>
     <script>
@@ -67,6 +78,15 @@
 
             document.getElementById('toggleButton').addEventListener('click', function() {
                 showPoints = !showPoints;
+                updateVoronoiDiagram();
+            });
+
+            document.getElementById('randomButton').addEventListener('click', function() {
+                for (let i = 0; i < 100; i++) {
+                    const randomX = Math.random() * canvas.width;
+                    const randomY = Math.random() * canvas.height;
+                    points.push([randomX, randomY]);
+                }
                 updateVoronoiDiagram();
             });
 
